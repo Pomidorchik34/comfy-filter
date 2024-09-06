@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import prod from "./products.json";
 import Form from "react-bootstrap/Form";
@@ -9,6 +9,8 @@ function App() {
   const [filteredData, setFilteredData] = useState([]);
   const [company, setCompany] = useState("all");
   const [price, setPrice] = useState(100000);
+  let shipping = useRef("");
+  console.log(shipping.current.checked);
   function handleSearch(event) {
     let copied = [...products];
     if (category != "all") {
@@ -20,19 +22,33 @@ function App() {
       copied = copied.filter((value) => {
         return value.company.toLowerCase() == company.toLowerCase();
       });
+      if (shipping != undefined) {
+        copied = copied.filter((value) => {
+          return value.shipping == shipping.current.checked;
+        });
+      }
     }
     copied = copied.filter((value) => {
       return value.price <= price;
     });
     setFilteredData(copied);
   }
+  function Search(e) {
+    let copied = [...products];
+    copied.filter((value) => {
+      return value.name == e.target.value;
+    });
+    setFilteredData(copied);
+  }
+  let form = useRef("");
+
   return (
     <>
       <div className="container-filter">
-        <form action="">
+        <form action="" ref={form}>
           <label>
             Search Product
-            <input type="text" />
+            <input type="text" onChange={Search} />
           </label>
           <label>
             Select Category
@@ -93,13 +109,24 @@ function App() {
           </label>
           <label>
             Free Shipping
-            <input className="chk" type="checkbox" name="" id="" />
+            <input
+              className="chk"
+              ref={shipping}
+              type="checkbox"
+              name=""
+              id=""
+            />
           </label>
           <div className="btns">
             <button onClick={handleSearch} style={{ background: "#057aff" }}>
               SEARCH
             </button>
-            <button style={{ background: "#c149ad" }}>RESET</button>
+            <button
+              onClick={() => location.reload()}
+              style={{ background: "#c149ad" }}
+            >
+              RESET
+            </button>
           </div>
         </div>
       </div>
@@ -111,6 +138,7 @@ function App() {
                 <img src={product.image} width={320} height={192} alt="" />
                 <h2>{product.title}</h2>
                 <span>{product.price / 100}$</span>
+                <span>{JSON.stringify(product.shipping)}</span>
                 <p>{product.company}</p>
               </div>
             );
@@ -122,6 +150,7 @@ function App() {
                 <img src={product.image} width={320} height={192} alt="" />
                 <h2>{product.title}</h2>
                 <span>{product.price / 100}$</span>
+                <span>{JSON.stringify(product.shipping)}</span>
                 <p>{product.company}</p>
               </div>
             );
