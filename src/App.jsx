@@ -22,11 +22,11 @@ function App() {
       copied = copied.filter((value) => {
         return value.company.toLowerCase() == company.toLowerCase();
       });
-      if (shipping != undefined) {
-        copied = copied.filter((value) => {
-          return value.shipping == shipping.current.checked;
-        });
-      }
+    }
+    if (shipping != undefined) {
+      copied = copied.filter((value) => {
+        return value.shipping == shipping.current.checked;
+      });
     }
     copied = copied.filter((value) => {
       return value.price <= price;
@@ -35,17 +35,16 @@ function App() {
   }
   function Search(e) {
     let copied = [...products];
+    console.log(e.target.value);
     copied.filter((value) => {
-      return value.name == e.target.value;
+      return value.titlte.includes(e.target.value);
     });
     setFilteredData(copied);
   }
-  let form = useRef("");
-
   return (
     <>
       <div className="container-filter">
-        <form action="" ref={form}>
+        <form action="">
           <label>
             Search Product
             <input type="text" onChange={Search} />
